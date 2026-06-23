@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Animesh Hazra — Statistical Physics</title>
+<meta name="description" content="Animesh Hazra — Bridge Fellow, S. N. Bose National Centre for Basic Sciences. Research on non-equilibrium statistical physics, mass transport, conservation laws and hyperuniformity.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..900&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --paper:      #ECE9DF;
+    --paper-deep: #E1DDCD;
+    --panel:      #F5F3EA;
+    --ink:        #181C1A;
+    --ink-soft:   #51564C;
+    --indigo:     #2B3A67;
+    --indigo-soft:#aab3cf;
+    --indigo-wash:rgba(43,58,103,0.10);
+    --signal:     #BD4527;
+    --line:       #CBC5AE;
+    --mono-c:     #5C6055;
+
+    --f-display:'Fraunces', serif;
+    --f-body:'Source Sans 3', sans-serif;
+    --f-mono:'IBM Plex Mono', monospace;
+
+    --maxw: 920px;
+    --pad: clamp(20px, 5vw, 56px);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+  }
+
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--f-body);
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{color:var(--indigo); text-decoration:none; border-bottom:1px solid transparent; transition:border-color .15s ease, color .15s ease;}
+  a:hover{border-color:var(--indigo);}
+  a:focus-visible, button:focus-visible{outline:2px solid var(--signal); outline-offset:3px; border-radius:2px;}
+
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 var(--pad);}
+
+  /* ---------- NAV ---------- */
+  nav.topbar{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    background:rgba(236,233,223,0.86);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{
+    max-width:var(--maxw); margin:0 auto; padding:14px var(--pad);
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .mark{
+    font-family:var(--f-display); font-weight:600; font-size:1.25rem;
+    color:var(--ink); letter-spacing:0.01em; border:none;
+  }
+  .mark span{color:var(--signal);}
+  .navlinks{display:flex; gap:22px; list-style:none; margin:0; padding:0;}
+  .navlinks a{
+    font-family:var(--f-mono); font-size:0.78rem; text-transform:uppercase;
+    letter-spacing:0.06em; color:var(--ink-soft); border:none;
+  }
+  .navlinks a:hover{color:var(--signal);}
+  #navToggle{display:none;}
+  .burger{display:none; background:none; border:1px solid var(--line); border-radius:6px; padding:7px 10px; cursor:pointer;}
+  .burger span{display:block; width:18px; height:2px; background:var(--ink); margin:4px 0;}
+
+  @media (max-width:720px){
+    .navlinks{
+      position:absolute; top:100%; left:0; right:0;
+      flex-direction:column; gap:0; background:var(--panel);
+      border-bottom:1px solid var(--line);
+      max-height:0; overflow:hidden; transition:max-height .25s ease;
+    }
+    .navlinks a{display:block; padding:14px var(--pad); border-top:1px solid var(--line);}
+    #navToggle:checked ~ .navlinks{max-height:480px;}
+    .burger{display:block;}
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative; overflow:hidden;
+    padding:148px var(--pad) 64px;
+    border-bottom:1px solid var(--line);
+  }
+  #hero-canvas{
+    position:absolute; inset:0; width:100%; height:100%;
+    z-index:0; opacity:0.55;
+  }
+  .hero-inner{position:relative; z-index:1; max-width:var(--maxw); margin:0 auto;}
+  .eyebrow{
+    font-family:var(--f-mono); font-size:0.78rem; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--indigo); margin:0 0 18px;
+  }
+  .eyebrow::before{content:"◆ "; color:var(--signal);}
+  h1.name{
+    font-family:var(--f-display); font-weight:340; font-size:clamp(2.6rem, 7vw, 4.6rem);
+    line-height:1.02; margin:0 0 14px; color:var(--ink);
+  }
+  .role{
+    font-family:var(--f-body); font-weight:600; font-size:clamp(1.05rem,2.4vw,1.3rem);
+    color:var(--ink-soft); margin:0 0 22px; max-width:600px;
+  }
+  .role em{font-style:normal; color:var(--indigo); border-bottom:1px solid var(--indigo-soft);}
+  .loc{font-family:var(--f-mono); font-size:0.85rem; color:var(--mono-c); margin:0 0 30px;}
+  .loc::before{content:"⌖ "; color:var(--signal);}
+
+  .contact-row{display:flex; flex-wrap:wrap; gap:10px;}
+  .pill{
+    display:inline-flex; align-items:center; gap:7px;
+    font-family:var(--f-mono); font-size:0.8rem;
+    border:1px solid var(--ink); border-radius:30px;
+    padding:7px 14px 7px 10px; color:var(--ink); background:var(--panel);
+  }
+  .pill:hover{background:var(--ink); color:var(--panel); border-color:var(--ink);}
+  .pill svg{width:14px; height:14px; flex:none;}
+  .pill:hover svg{stroke:var(--panel);}
+
+  /* instrument strip */
+  .strip{
+    border-bottom:1px solid var(--line); background:var(--paper-deep);
+  }
+  .strip-inner{
+    max-width:var(--maxw); margin:0 auto; padding:14px var(--pad);
+    display:flex; flex-wrap:wrap; gap:6px 26px;
+    font-family:var(--f-mono); font-size:0.78rem; color:var(--ink-soft);
+  }
+  .strip-inner b{color:var(--ink); font-weight:500;}
+  .strip-inner span.sep{color:var(--signal);}
+
+  /* ---------- SECTIONS ---------- */
+  section{padding:64px var(--pad); border-bottom:1px solid var(--line);}
+  section:last-of-type{border-bottom:none;}
+  .sec-inner{max-width:var(--maxw); margin:0 auto;}
+  .sec-head{display:flex; align-items:baseline; gap:14px; margin-bottom:34px;}
+  .sec-num{font-family:var(--f-mono); font-size:0.78rem; color:var(--signal);}
+  h2{
+    font-family:var(--f-display); font-weight:430; font-size:clamp(1.5rem,3.4vw,2.05rem);
+    margin:0; color:var(--ink);
+  }
+  .sec-rule{flex:1; height:1px; background:var(--line); margin-left:6px;}
+
+  .fade{opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease;}
+  .fade.in{opacity:1; transform:translateY(0);}
+
+  /* About / research statement */
+  .statement{
+    font-family:var(--f-display); font-weight:340; font-size:clamp(1.15rem,2.6vw,1.5rem);
+    line-height:1.5; color:var(--ink); max-width:760px;
+  }
+  .statement .accent{color:var(--indigo);}
+
+  /* Education timeline */
+  .tl{list-style:none; margin:0; padding:0; border-left:2px solid var(--line); margin-left:6px;}
+  .tl-item{position:relative; padding:0 0 30px 30px;}
+  .tl-item:last-child{padding-bottom:0;}
+  .tl-item::before{
+    content:""; position:absolute; left:-7px; top:4px;
+    width:12px; height:12px; background:var(--signal);
+    transform:rotate(45deg); border:2px solid var(--paper);
+  }
+  .tl-date{font-family:var(--f-mono); font-size:0.78rem; color:var(--indigo); letter-spacing:.03em;}
+  .tl-title{font-family:var(--f-body); font-weight:700; font-size:1.05rem; margin:3px 0 2px;}
+  .tl-sub{font-size:0.95rem; color:var(--ink-soft); margin:0;}
+  .tl-meta{font-family:var(--f-mono); font-size:0.82rem; color:var(--mono-c); margin-top:3px;}
+
+  /* PhD card */
+  .thesis{
+    background:var(--panel); border:1px solid var(--line); border-radius:4px;
+    padding:30px clamp(20px,4vw,38px); position:relative;
+  }
+  .thesis::before{
+    content:"◆"; position:absolute; top:-12px; left:28px;
+    background:var(--paper); color:var(--signal); padding:0 8px; font-size:0.9rem;
+  }
+  .thesis-label{font-family:var(--f-mono); font-size:0.74rem; letter-spacing:.1em; text-transform:uppercase; color:var(--mono-c); margin:0 0 8px;}
+  .thesis h3{font-family:var(--f-display); font-weight:420; font-size:1.4rem; margin:0 0 14px; color:var(--ink);}
+  .thesis dl{display:grid; grid-template-columns:auto 1fr; gap:6px 16px; margin:0; font-size:0.95rem;}
+  .thesis dt{font-family:var(--f-mono); font-size:0.78rem; color:var(--indigo); align-self:start; padding-top:2px;}
+  .thesis dd{margin:0; color:var(--ink-soft);}
+
+  /* Publications */
+  .pub-list{list-style:none; margin:0; padding:0;}
+  .pub{
+    display:grid; grid-template-columns:46px 1fr; gap:18px;
+    padding:22px 0; border-top:1px solid var(--line);
+  }
+  .pub:first-child{border-top:none;}
+  .pub-idx{font-family:var(--f-mono); font-size:1.1rem; color:var(--line); font-weight:500; padding-top:2px;}
+  .pub-year{
+    display:inline-block; font-family:var(--f-mono); font-size:0.72rem; color:var(--indigo);
+    border:1px solid var(--indigo-soft); border-radius:3px; padding:2px 7px; margin-bottom:8px;
+  }
+  .pub-title{font-family:var(--f-body); font-weight:700; font-size:1.04rem; margin:0 0 6px; color:var(--ink);}
+  .pub-authors{font-size:0.92rem; color:var(--ink-soft); margin:0 0 4px;}
+  .pub-authors .me{color:var(--ink); font-weight:700;}
+  .pub-venue{font-size:0.9rem; font-style:italic; color:var(--mono-c); margin:0 0 8px;}
+  .pub-doi{font-family:var(--f-mono); font-size:0.8rem;}
+
+  /* Projects */
+  .proj-list{list-style:none; margin:0; padding:0; display:grid; gap:18px;}
+  .proj{border-left:3px solid var(--signal); padding:4px 0 4px 18px;}
+  .proj p{margin:0 0 6px; font-size:0.98rem; color:var(--ink);}
+  .proj .meta{font-family:var(--f-mono); font-size:0.78rem; color:var(--mono-c);}
+
+  /* Conferences */
+  .conf-grid{display:grid; gap:0;}
+  .conf{
+    display:grid; grid-template-columns:64px 1fr auto; gap:14px; align-items:baseline;
+    padding:13px 0; border-top:1px solid var(--line); font-size:0.94rem;
+  }
+  .conf:first-child{border-top:none;}
+  .conf-year{font-family:var(--f-mono); color:var(--indigo); font-size:0.85rem;}
+  .conf-tag{
+    font-family:var(--f-mono); font-size:0.7rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--mono-c); white-space:nowrap;
+  }
+  .conf-tag.talk{color:var(--signal);}
+
+  /* Skills */
+  .skill-grid{display:grid; gap:26px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));}
+  .skill-cat h4{
+    font-family:var(--f-mono); font-size:0.74rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--signal); margin:0 0 12px;
+  }
+  .chips{display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{
+    font-family:var(--f-mono); font-size:0.82rem; background:var(--panel);
+    border:1px solid var(--line); border-radius:3px; padding:5px 10px; color:var(--ink);
+  }
+
+  /* Achievements / Volunteer */
+  .ach-list{list-style:none; margin:0; padding:0; display:grid; gap:16px;}
+  .ach{display:grid; grid-template-columns:130px 1fr; gap:16px;}
+  .ach-tag{font-family:var(--f-mono); font-size:0.78rem; color:var(--indigo); padding-top:2px;}
+  .ach p{margin:0; font-size:0.97rem;}
+  .ach b{color:var(--ink);}
+
+  .vol-list{margin:0; padding:0; list-style:none; display:grid; gap:12px;}
+  .vol-list li{position:relative; padding-left:20px; font-size:0.97rem;}
+  .vol-list li::before{content:"◆"; position:absolute; left:0; top:2px; color:var(--signal); font-size:0.7rem;}
+
+  /* Footer */
+  footer{padding:48px var(--pad) 60px; text-align:center;}
+  footer .pill{margin:4px;}
+  .copyright{
+    font-family:var(--f-mono); font-size:0.76rem; color:var(--mono-c); margin-top:30px;
+  }
+
+  ::selection{background:var(--signal); color:var(--paper);}
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="topbar-inner">
+    <a href="#top" class="mark">A<span>·</span>Hazra</a>
+    <input type="checkbox" id="navToggle">
+    <label for="navToggle" class="burger" aria-label="Toggle menu"><span></span><span></span><span></span></label>
+    <ul class="navlinks">
+      <li><a href="#about">About</a></li>
+      <li><a href="#education">Education</a></li>
+      <li><a href="#publications">Publications</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#conferences">Conferences</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-inner">
+    <p class="eyebrow">Statistical Physics · Non-equilibrium Systems</p>
+    <h1 class="name">Animesh Hazra</h1>
+    <p class="role">Bridge Fellow at S.&nbsp;N.&nbsp;Bose National Centre for Basic Sciences, studying <em>mass transport, conservation laws &amp; hyperuniform fluctuations</em> in driven systems far from equilibrium.</p>
+    <p class="loc">Barbasudebpur, East Medinipur, West Bengal, India</p>
+    <div class="contact-row">
+      <a class="pill" href="mailto:ahazra.edu@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M3 6.5l9 6.5 9-6.5"/></svg>Email</a>
+      <a class="pill" href="#" target="_blank" rel="noopener" title="Replace with your Google Scholar profile URL"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 4 2 9l10 5 10-5-10-5Z"/><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>Scholar</a>
+      <a class="pill" href="#" target="_blank" rel="noopener" title="Replace with your ResearchGate profile URL"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="3"/><circle cx="17" cy="7" r="3"/><circle cx="12" cy="17" r="3"/><path d="M9.5 8.5 11 15M14.5 8.5 13 15"/></svg>ResearchGate</a>
+      <a class="pill" href="https://x.com/animeshhz" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4l16 16M20 4 4 20"/></svg>X</a>
+      <a class="pill" href="https://www.linkedin.com/in/ah1997ha/" target="_blank" rel="noopener" title="Verify this matches your LinkedIn URL"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7.5 10v6M7.5 7.5v.01M12 16v-3.5c0-1.4 1-2.5 2.3-2.5s2.2 1 2.2 2.5V16"/></svg>LinkedIn</a>
+      <a class="pill" href="#" target="_blank" rel="noopener" title="Replace with your ORCID URL"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M9 9v7M9 9h2.2c1.6 0 2.8 1.6 2.8 3.5S12.8 16 11.2 16H9"/><circle cx="9" cy="7" r="0.4" fill="currentColor"/></svg>ORCID</a>
+    </div>
+  </div>
+</header>
+
+<div class="strip">
+  <div class="strip-inner">
+    <span><b>5</b> publications <span class="sep">◆</span></span>
+    <span><b>11</b> conferences attended <span class="sep">◆</span></span>
+    <span><b>2</b> manuscripts in preparation <span class="sep">◆</span></span>
+    <span>Ph.D. — University of Calcutta <span class="sep">◆</span></span>
+    <span>Advisor: Prof. Punyabrata Pradhan</span>
+  </div>
+</div>
+
+<section id="about">
+  <div class="sec-inner fade">
+    <div class="sec-head"><span class="sec-num">01</span><h2>Research interest</h2><div class="sec-rule"></div></div>
+    <p class="statement">My work explores <span class="accent">dynamic fluctuations of current and mass</span>, and the power spectra they generate, across a wide range of non-equilibrium systems — systems that violate detailed balance in the bulk, carry nonzero spatial correlations, and often obey more than one conservation law. The central question I keep returning to: how do conservation laws shape the dynamics of systems driven away from equilibrium?</p>
+  </div>
+</section>
+
+<section id="education">
+  <div class="sec-inner fade">
+    <div class="sec-head"><span class="sec-num">02</span><h2>Education &amp; positions</h2><div class="sec-rule"></div></div>
+    <ul class="tl">
+      <li class="tl-item">
+        <p class="tl-date">2025 — 9 June 2026</p>
+        <p class="tl-title">Bridge Fellow</p>
+        <p class="tl-sub">S. N. Bose National Centre for Basic Sciences, Kolkata — Dept. of Physics of Complex Systems</p>
+      </li>
+      <li class="tl-item">
+        <p class="tl-date">2022 — 2025</p>
+        <p class="tl-title">Senior Research Fellow</p>
+        <p class="tl-sub">S. N. Bose National Centre for Basic Sciences, Kolkata — Dept. of Physics of Complex Systems</p>
+      </li>
+      <li class="tl-item">
+        <p class="tl-date">2020 — 2022</p>
+        <p class="tl-title">Junior Research Fellow</p>
+        <p class="tl-sub">S. N. Bose National Centre for Basic Sciences, Kolkata — Dept. of Physics of Complex Systems</p>
+      </li>
+      <li class="tl-item">
+        <p class="tl-date">2018 — 2020</p>
+        <p class="tl-title">M.Sc., Physics</p>
+        <p class="tl-sub">S. N. Bose National Centre for Basic Sciences</p>
+        <p class="tl-meta">First Class First · DGPA 8.48</p>
+      </li>
+      <li class="tl-item">
+        <p class="tl-date">2015 — 2018</p>
+        <p class="tl-title">B.Sc., Physics</p>
+        <p class="tl-sub">Ramakrishna Mission Vivekananda Centenary College, Rahara</p>
+        <p class="tl-meta">First Class · 75.88%</p>
+      </li>
+    </ul>
+
+    <div style="height:34px"></div>
+
+    <div class="thesis">
+      <p class="thesis-label">Ph.D. Thesis</p>
+      <h3>Dynamic properties of mass transport processes</h3>
+      <dl>
+        <dt>University</dt><dd>University of Calcutta</dd>
+        <dt>Supervisor</dt><dd>Prof. Punyabrata Pradhan</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section id="publications">
+  <div class="sec-inner fade">
+    <div class="sec-head"><span class="sec-num">03</span><h2>Publications</h2><div class="sec-rule"></div></div>
+    <ul class="pub-list">
+
+      <li class="pub">
+        <span class="pub-idx">01</span>
+        <div>
+          <span class="pub-year">Apr 2026 · arXiv</span>
+          <p class="pub-title">Power laws, anisotropy and center-of-mass conservation in mass transport processes</p>
+          <p class="pub-authors">Aniket Samanta, <span class="me">Animesh Hazra</span>, and Punyabrata Pradhan</p>
+          <p class="pub-venue">arXiv eprint 2604.02167</p>
+          <p class="pub-doi"><a href="https://doi.org/10.48550/arXiv.2604.02167" target="_blank" rel="noopener">doi.org/10.48550/arXiv.2604.02167</a></p>
+        </div>
+      </li>
+
+      <li class="pub">
+        <span class="pub-idx">02</span>
+        <div>
+          <span class="pub-year">Oct 2025</span>
+          <p class="pub-title">Generic power laws in higher-dimensional lattice models with multidirectional hopping</p>
+          <p class="pub-authors"><span class="me">Animesh Hazra</span>, Tanmoy Chakraborty, Anirban Mukherjee, and Punyabrata Pradhan</p>
+          <p class="pub-venue">Phys. Rev. E 112.4 (2025), p. 044130</p>
+          <p class="pub-doi"><a href="https://doi.org/10.1103/sn1k-k8ng" target="_blank" rel="noopener">doi.org/10.1103/sn1k-k8ng</a></p>
+        </div>
+      </li>
+
+      <li class="pub">
+        <span class="pub-idx">03</span>
+        <div>
+          <span class="pub-year">Feb 2025</span>
+          <p class="pub-title">Hyperuniformity in mass transport processes with center-of-mass conservation: some exact results</p>
+          <p class="pub-authors"><span class="me">Animesh Hazra</span>, Anirban Mukherjee, and Punyabrata Pradhan</p>
+          <p class="pub-venue">J. Stat. Mech.: Theory Exp. 2025.2 (2025), p. 023201 · ISSN 1742-5468</p>
+          <p class="pub-doi"><a href="https://doi.org/10.1088/1742-5468/ada88c" target="_blank" rel="noopener">doi.org/10.1088/1742-5468/ada88c</a></p>
+        </div>
+      </li>
+
+      <li class="pub">
+        <span class="pub-idx">04</span>
+        <div>
+          <span class="pub-year">Aug 2024</span>
+          <p class="pub-title">Dynamic fluctuations of current and mass in nonequilibrium mass transport processes</p>
+          <p class="pub-authors"><span class="me">Animesh Hazra</span>, Anirban Mukherjee, and Punyabrata Pradhan</p>
+          <p class="pub-venue">J. Stat. Mech.: Theory Exp. 2024.8 (2024), p. 083205 · ISSN 1742-5468</p>
+          <p class="pub-doi"><a href="https://doi.org/10.1088/1742-5468/ad5c56" target="_blank" rel="noopener">doi.org/10.1088/1742-5468/ad5c56</a></p>
+        </div>
+      </li>
+
+      <li class="pub">
+        <span class="pub-idx">05</span>
+        <div>
+          <span class="pub-year">Aug 2024</span>
+          <p class="pub-title">Anomalous relaxation and hyperuniform fluctuations in center-of-mass conserving systems with broken time-reversal symmetry</p>
+          <p class="pub-authors">Anirban Mukherjee, Dhiraj Tapader, <span class="me">Animesh Hazra</span>, and Punyabrata Pradhan</p>
+          <p class="pub-venue">Phys. Rev. E 110.2 (2024), p. 024119</p>
+          <p class="pub-doi"><a href="https://doi.org/10.1103/PhysRevE.110.024119" target="_blank" rel="noopener">doi.org/10.1103/PhysRevE.110.024119</a></p>
+        </div>
+      </li>
+
+    </ul>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="sec-inner fade">
+    <div class="sec-head"><span class="sec-num">04</span><h2>Ongoing projects</h2><div class="sec-rule"></div></div>
+    <ul class="proj-list">
+      <li class="proj">
+        <p>Static and dynamic properties of conserved-mass transport processes: role of symmetries and conservation laws</p>
+        <p class="meta">with Aniket Samanta, Koushik Das, Anirban Mukherjee &amp; Punyabrata Pradhan — manuscript under preparation</p>
+      </li>
+      <li class="proj">
+        <p>Transport properties of kinetically constrained lattice gases</p>
+        <p class="meta">with Koushik Das &amp; Punyabrata Pradhan — manuscript under preparation</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section id="conferences">
+  <div class="sec-inner fade">
+    <div class="sec-head"><span class="sec-num">05</span><h2>Conferences attended</h2><div class="sec-rule"></div></div>
+    <div class="conf-grid">
+
+      <div class="conf"><span class="conf-year">2025</span><span>Stat. Mech. Meet Kolkata (SMMK-2025), SNBNCBS, Kolkata</span><span class="conf-tag talk">Delivered talk</span></div>
+      <div class="conf"><span class="conf-year">2025</span><span>29th International Conference on Statistical Physics, Florence, Italy</span><span class="conf-tag">Poster</span></div>
+      <div class="conf"><span class="conf-year">2025</span><span>Physics of Non-equilibrium Systems, SNBNCBS, Kolkata</span><span class="conf-tag">Poster</span></div>
+      <div class="conf"><span class="conf-year">2024</span><span>Stat. Mech. Meet Kolkata (SMMK-2024), SNBNCBS, Kolkata</span><span class="conf-tag talk">Delivered talk</span></div>
+      <div class="conf"><span class="conf-year">2024</span><span>9th Indian Statistical Physics Community Meeting, ICTS, Bangalore</span><span class="conf-tag">Poster</span></div>
+      <div class="conf"><span class="conf-year">2023</span><span>StatPhys Kolkata XII, SNBNCBS &amp; IISER Kolkata, India</span><span class="conf-tag">Poster</span></div>
+      <div class="conf"><span class="conf-year">2023</span><span>Statistical Physics After 100 Years Of The Ising Model, University of Calcutta</span><span class="conf-tag">Poster</span></div>
+      <div class="conf"><span class="conf-year">2023</span><span>Steady-state phenomena in soft matter, active and biological systems, SNBNCBS, Kolkata</span><span class="conf-tag">Attended</span></div>
+      <div class="conf"><span class="conf-year">2022</span><span>Statistical physics of complex systems, ICTS, Bangalore</span><span class="conf-tag">Attended</span></div>
+      <div class="conf"><span class="conf-year">2022</span><span>Statistical Physics: Recent advances and Future directions, ICTS, Bangalore (Online)</span><span class="conf-tag">Attended</span></div>
+      <div class="conf"><span class="conf-year">2021</span><span>Bangalore School of Statistical Physics-XII, ICTS, Bangalore (Online)</span><span class="conf-tag">Attended</span></div>
+
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="sec-inner fade">
+    <div class="sec-head"><span class="sec-num">06</span><h2>Skills</h2><div class="sec-rule"></div></div>
+    <div class="skill-grid">
+      <div class="skill-cat">
+        <h4>Languages</h4>
+        <p style="font-size:0.95rem; color:var(--ink-soft); margin:0 0 10px;">Reasonably good reading, writing &amp; speaking competence</p>
+        <div class="chips"><span class="chip">Bengali (mother tongue)</span><span class="chip">English</span><span class="chip">Hindi</span></div>
+      </div>
+      <div class="skill-cat">
+        <h4>Coding</h4>
+        <div class="chips"><span class="chip">Python</span><span class="chip">C / C++</span><span class="chip">FORTRAN</span><span class="chip">HTML</span><span class="chip">Mathematica</span><span class="chip">MATLAB</span></div>
+      </div>
+      <div class="skill-cat">
+        <h4>Misc.</h4>
+        <div class="chips"><span class="chip">Academic research</span><span class="chip">Teaching &amp; training</span><span class="chip">LaTeX typesetting &amp; publishing</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="achievements">
+  <div class="sec-inner fade">
+    <div class="sec-head"><span class="sec-num">07</span><h2>Scholastic &amp; curricular achievements</h2><div class="sec-rule"></div></div>
+    <ul class="ach-list">
+      <li class="ach"><span class="ach-tag">M.Sc.</span><p><b>Topper Medal</b> in M.Sc., S. N. Bose National Centre for Basic Sciences (Batch 2018–2020)</p></li>
+      <li class="ach"><span class="ach-tag">CSIR-NET</span><p>Secured <b>All India JRF rank of 89</b> in Physical Science, November 2020</p></li>
+      <li class="ach"><span class="ach-tag">JEST</span><p>Secured <b>All India Rank of 126</b> in Physics, 2018</p></li>
+      <li class="ach"><span class="ach-tag">Fellowship</span><p><b>Junior and Senior Research Fellowship</b> by S. N. Bose National Centre for Basic Sciences</p></li>
+      <li class="ach"><span class="ach-tag">Grant</span><p><b>International Travel Support (ITS)</b> awarded by Anusandhan National Research Foundation (ANRF), 2025, to attend STATPHYS29, Florence, Italy</p></li>
+      <li class="ach"><span class="ach-tag">Scholarship</span><p><b>Swami Vivekananda Merit-cum-Means Scholarship</b>, 2015–2018</p></li>
+    </ul>
+
+    <div style="height:40px"></div>
+
+    <h4 style="font-family:var(--f-mono); font-size:0.74rem; text-transform:uppercase; letter-spacing:.1em; color:var(--signal); margin:0 0 16px;">Volunteer experience</h4>
+    <ul class="vol-list">
+      <li>Local organizer for: SSPSM 2023, TPSAM-2024, BoseStat@100, CQNS-2025</li>
+      <li>Sports Coordinator, SNBNCBS (2022–23)</li>
+    </ul>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="sec-inner fade" style="text-align:center;">
+    <div class="sec-head" style="justify-content:center;"><span class="sec-num">08</span><h2>Get in touch</h2><div class="sec-rule" style="display:none;"></div></div>
+    <p style="max-width:520px; margin:0 auto 26px; color:var(--ink-soft);">Always glad to talk statistical physics, conservation laws, or where the next conference poster should go.</p>
+    <div class="contact-row" style="justify-content:center;">
+      <a class="pill" href="mailto:ahazra.edu@gmail.com">ahazra.edu@gmail.com</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p class="copyright">© <span id="year"></span> Animesh Hazra · Built with plain HTML, CSS &amp; JS · Hosted on GitHub Pages</p>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // close mobile nav after a link is tapped
+  document.querySelectorAll('.navlinks a').forEach(function(a){
+    a.addEventListener('click', function(){ document.getElementById('navToggle').checked = false; });
+  });
+
+  // fade-up sections on scroll
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduceMotion && 'IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); obs.unobserve(e.target);} });
+    }, {threshold:0.12});
+    document.querySelectorAll('.fade').forEach(function(el){ obs.observe(el); });
+  } else {
+    document.querySelectorAll('.fade').forEach(function(el){ el.classList.add('in'); });
+  }
+
+  // ---- hero canvas: a perturbed (hyperuniform-like) lattice of points ----
+  // a jittered grid suppresses long-wavelength density fluctuations the way
+  // a Poisson process does not -- a small nod to the research itself.
+  (function(){
+    var canvas = document.getElementById('hero-canvas');
+    var ctx = canvas.getContext('2d');
+    var hero = document.querySelector('.hero');
+    var pts = [];
+    var cell = 34;
+    var t = 0;
+
+    function resize(){
+      var rect = hero.getBoundingClientRect();
+      canvas.width = rect.width * devicePixelRatio;
+      canvas.height = rect.height * devicePixelRatio;
+      canvas.style.width = rect.width + 'px';
+      canvas.style.height = rect.height + 'px';
+      ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+      buildPoints(rect.width, rect.height);
+    }
+
+    function buildPoints(w,h){
+      pts = [];
+      var cols = Math.ceil(w/cell)+1;
+      var rows = Math.ceil(h/cell)+1;
+      for(var i=0;i<cols;i++){
+        for(var j=0;j<rows;j++){
+          var jitterX = (Math.random()-0.5)*cell*0.7;
+          var jitterY = (Math.random()-0.5)*cell*0.7;
+          pts.push({
+            x: i*cell + jitterX,
+            y: j*cell + jitterY,
+            phase: Math.random()*Math.PI*2,
+            amp: 2 + Math.random()*2.5,
+            r: 1.1 + Math.random()*1.3
+          });
+        }
+      }
+    }
+
+    function draw(){
+      var w = canvas.width/devicePixelRatio, h = canvas.height/devicePixelRatio;
+      ctx.clearRect(0,0,w,h);
+      ctx.fillStyle = '#2B3A67';
+      for(var k=0;k<pts.length;k++){
+        var p = pts[k];
+        var dx = Math.sin(t*0.4 + p.phase)*p.amp*0.4;
+        var dy = Math.cos(t*0.35 + p.phase)*p.amp*0.4;
+        ctx.globalAlpha = 0.22 + 0.10*Math.sin(t*0.5+p.phase);
+        ctx.beginPath();
+        ctx.arc(p.x+dx, p.y+dy, p.r, 0, Math.PI*2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    function tick(){
+      t += 0.012;
+      draw();
+      if(!reduceMotion){ requestAnimationFrame(tick); }
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+    if(reduceMotion){ draw(); } else { requestAnimationFrame(tick); }
+  })();
+</script>
+
+</body>
+</html>
